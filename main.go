@@ -132,7 +132,7 @@ func handleSlashCommand(command slack.SlashCommand, client *slack.Client) (inter
 		return nil, handleCurrentPhoneCommand(command, client)
 	case "/redirect":
 		return nil, handleSwitchPhoneCommand(command, client)
-	case "cancel_redirect":
+	case "/cancel_redirect":
 		return nil, handleCancelRedirectCommand(command, client)
 	}
 	return nil, nil

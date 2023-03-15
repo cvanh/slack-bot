@@ -8,6 +8,8 @@ import (
 
 // handleSwitchPhoneCommand will take care of /redirect submissions and switches the phone
 func handleSwitchPhoneCommand(command slack.SlashCommand, client *slack.Client) error {
+	
+
 	// The Input is found in the text field so
 	// Create the attachment and assigned based on the message
 	attachment := slack.Attachment{}
