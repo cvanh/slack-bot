@@ -1,4 +1,4 @@
-module programmingpercy/slack-bot
+module cvanh/slack-bot
 
 go 1.20
 

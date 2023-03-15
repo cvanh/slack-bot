@@ -129,42 +129,13 @@ func handleSlashCommand(command slack.SlashCommand, client *slack.Client) (inter
 	// We need to switch depending on the command
 	switch command.Command {
 	case "/current_redirected_phone":
-		// This was a hello command, so pass it along to the proper function
 		return nil, handleCurrentPhoneCommand(command, client)
 	case "/redirect":
-		return nil, nil
+		return nil, handleSwitchPhoneCommand(command, client)
+	case "cancel_redirect":
+		return nil, handleCancelRedirectCommand(command, client)
 	}
-
 	return nil, nil
-}
-
-// handleCurrentPhoneCommand will take care of /current_redirected_phone submissions and returns the phoen that is curently switched trough
-func handleCurrentPhoneCommand(command slack.SlashCommand, client *slack.Client) error {
-	// The Input is found in the text field so
-	// Create the attachment and assigned based on the message
-	attachment := slack.Attachment{}
-	// Add Some default context like user who mentioned the bot
-	attachment.Fields = []slack.AttachmentField{
-		{
-			Title: "Date",
-			Value: time.Now().String(),
-		}, {
-			Title: "Initializer",
-			Value: command.UserName,
-		},
-	}
-
-	// Greet the user
-	attachment.Text = fmt.Sprintf("Hello %s", command.Text)
-	attachment.Color = "#4af030"
-
-	// Send the message to the channel
-	// The Channel is available in the command.ChannelID
-	_, _, err := client.PostMessage(command.ChannelID, slack.MsgOptionAttachments(attachment))
-	if err != nil {
-		return fmt.Errorf("failed to post message: %w", err)
-	}
-	return nil
 }
 
 // handleEventMessage will take an event and handle it properly based on the type of event
@@ -228,35 +199,4 @@ func handleAppMentionEvent(event *slackevents.AppMentionEvent, client *slack.Cli
 		return fmt.Errorf("failed to post message: %w", err)
 	}
 	return nil
-}
-
-func sendmessage(channelID string, client *slack.Client) {
-	// Create the Slack attachment that we will send to the channel
-	attachment := slack.Attachment{
-		Pretext: "Super Bot Message",
-		Text:    "some text",
-		// Color Styles the Text, making it possible to have like Warnings etc.
-		Color: "#36a64f",
-		// Fields are Optional extra data!
-		Fields: []slack.AttachmentField{
-			{
-				Title: "Date",
-				Value: time.Now().String(),
-			},
-		},
-	}
-	// PostMessage will send the message away.
-	// First parameter is just the channelID, makes no sense to accept it
-	_, timestamp, err := client.PostMessage(
-		channelID,
-		// uncomment the item below to add a extra Header to the message, try it out :)
-		//slack.MsgOptionText("New message from bot", false),
-		slack.MsgOptionAttachments(attachment),
-	)
-
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("Message sent at %s", timestamp)
 }
